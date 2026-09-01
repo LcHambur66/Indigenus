@@ -1,21 +1,75 @@
--- Script de criação da tabela e inserção de dados iniciais
-
--- 1. Remove a tabela antiga caso exista com estrutura diferente
 DROP TABLE IF EXISTS produtos CASCADE;
 
--- 2. Criação da tabela 'produtos'
 CREATE TABLE produtos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     categoria VARCHAR(100) NOT NULL,
     quantidade INTEGER NOT NULL,
-    preco NUMERIC(10,2) NOT NULL
+    preco NUMERIC(10, 2) NOT NULL,
+    imagem VARCHAR(255) NOT NULL
 );
 
--- 3. Inserção de registros para testes
-INSERT INTO produtos (nome, categoria, quantidade, preco) VALUES
-('Teclado Mecânico', 'Periféricos', 15, 299.90),
-('Mouse Gamer', 'Periféricos', 25, 149.90),
-('Monitor 24"', 'Monitores', 10, 899.00),
-('Notebook', 'Computadores', 5, 3500.00),
-('Headset', 'Áudio', 20, 199.90);
+INSERT INTO
+    produtos (
+        nome,
+        categoria,
+        quantidade,
+        preco,
+        imagem
+    )
+VALUES (
+        'Ração Premium para Cães',
+        'Ração',
+        20,
+        89.90,
+        'src/img/racao.jpg'
+    ),
+    (
+        'Ração Premium para Gatos',
+        'Ração',
+        15,
+        79.90,
+        'src/img/racao-gato.jpg'
+    ),
+    (
+        'Brinquedo Mordedor',
+        'Brinquedos',
+        30,
+        24.90,
+        'src/img/mordedor.jpg'
+    ),
+    (
+        'Bolinha para Cachorro',
+        'Brinquedos',
+        25,
+        19.90,
+        'src/img/bolinha.jpg'
+    ),
+    (
+        'Cama para Pet',
+        'Acessórios',
+        10,
+        129.90,
+        'src/img/cama.jpg'
+    ),
+    (
+        'Coleira para Cachorro',
+        'Acessórios',
+        18,
+        39.90,
+        'src/img/coleira.jpg'
+    ),
+    (
+        'Areia para Gatos',
+        'Higiene',
+        20,
+        34.90,
+        'src/img/areia-gato.jpg'
+    ),
+    (
+        'Shampoo para Pets',
+        'Higiene',
+        12,
+        29.90,
+        'src/img/shampoo.jpg'
+    );
