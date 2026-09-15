@@ -1,18 +1,16 @@
-import pkg from 'pg';
-import dotenv from 'dotenv';
+import '../config.js';
+import pg from 'pg';
 
-// Carrega as variáveis de ambiente do arquivo .env
-dotenv.config();
-
-const { Pool } = pkg;
-
-// Configuração do pool de conexões com o PostgreSQL
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT) || 5432,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+const pool = new pg.Pool({
+  ...(process.env.DATABASE_URL ? { connectionString: process.env.DATABASE_URL } : {
+    host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT || 5432),
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'indigenus',
+  }),
+  connectionTimeoutMillis: 5000,
+  max: 10,
 });
-
+pool.on('error', error => console.error('Conexão PostgreSQL interrompida:', error.code));
 export default pool;
