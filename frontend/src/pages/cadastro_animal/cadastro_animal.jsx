@@ -15,12 +15,9 @@ export default function CadastroAnimal() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    
     if (files && files[0]) {
       const arquivo = files[0];
-      
       setFotoPreview(URL.createObjectURL(arquivo));
-      
       setForm((prev) => ({
         ...prev,
         [name]: arquivo,
@@ -33,15 +30,56 @@ export default function CadastroAnimal() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados do animal:", form);
+
+    const formData = new FormData();
+    formData.append("nome", form.nome);
+    formData.append("especime", form.especime);
+    formData.append("raca", form.raca);
+    formData.append("sexo", form.sexo);
+    formData.append("dataNascimento", form.dataNascimento);
+    formData.append("informacoes", form.informacoes);
+    
+    if (form.foto) {
+      formData.append("foto", form.foto);
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/animais", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar o animal");
+      }
+
+      const dadosSalvos = await response.json();
+      console.log("Animal cadastrado com sucesso:", dadosSalvos);
+      alert("Animal cadastrado com sucesso!");
+
+      setForm({
+        nome: "",
+        especime: "",
+        raca: "",
+        sexo: "",
+        dataNascimento: "",
+        informacoes: "",
+        foto: null,
+      });
+      setFotoPreview(null);
+
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Houve um erro ao tentar salvar o animal.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
-
+        
         <div className="bg-teal-400 text-white p-8 md:w-2/5 flex flex-col justify-center">
           <span className="bg-white/20 text-xs font-medium px-3 py-1 rounded-full w-fit mb-6">
             PERFIL DO PET
@@ -56,9 +94,8 @@ export default function CadastroAnimal() {
         <div className="p-8 md:w-3/5">
           <h2 className="text-2xl font-bold text-gray-800 mb-1">Formulário</h2>
           <p className="text-sm text-gray-500 mb-6">Informe os dados do seu animal.</p>
-
+          
           <form onSubmit={handleSubmit} className="space-y-5">
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nome do animal
@@ -87,6 +124,7 @@ export default function CadastroAnimal() {
                   required
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Raça
@@ -110,7 +148,7 @@ export default function CadastroAnimal() {
                   {[
                     { label: "Macho", value: "M" },
                     { label: "Fêmea", value: "F" },
-                    { label: "Castrado", value: "C" }
+                    { label: "Castrado", value: "C" },
                   ].map((opcao) => (
                     <label key={opcao.value} className="flex items-center gap-1.5 cursor-pointer">
                       <input
@@ -126,6 +164,7 @@ export default function CadastroAnimal() {
                   ))}
                 </div>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Data de nascimento
@@ -145,21 +184,13 @@ export default function CadastroAnimal() {
                 Foto do animal:
               </label>
               <label className="relative flex flex-col items-center justify-center w-32 h-32 border-2 border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50">
-                
                 {fotoPreview ? (
-                  <img 
-                    src={fotoPreview} 
-                    alt="Preview do pet" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={fotoPreview} alt="Preview do pet" className="w-full h-full object-cover rounded-xl" />
                 ) : (
-                  <>
-                    <span className="text-[10px] text-gray-500 text-center px-1">
-                      Adicionar foto<br />PNG, JPG ou JPEG
-                    </span>
-                  </>
+                  <span className="text-[10px] text-gray-500 text-center px-1">
+                    Adicionar foto<br />PNG, JPG ou JPEG
+                  </span>
                 )}
-
                 <input
                   type="file"
                   name="foto"
@@ -169,6 +200,7 @@ export default function CadastroAnimal() {
                 />
               </label>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Informações adicionais
@@ -202,6 +234,7 @@ export default function CadastroAnimal() {
             </div>
           </form>
         </div>
+
       </div>
     </div>
   );
