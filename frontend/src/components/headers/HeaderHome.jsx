@@ -3,7 +3,7 @@
 function HeaderHome() {
     return (
         <>
-        <header className="flex justify-between items-center h-36 bg-[#2563EB] text-white font-medium">
+        <header className="flex justify-between items-center h-30 bg-[#2563EB] text-white font-medium">
             <h1 className="text-6xl ml-20">IndigenusPet</h1>
 
             <nav className="flex items-center justify-center">
