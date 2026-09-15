@@ -4,9 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import clienteRoutes from './routes/clienteRoutes.js';
 import animalRoutes from './routes/animalRoutes.js';
-import produtoRoutes from './routes/produtoRoutes.js';
 import { initializeDatabase } from './config/database.js';
-import { authMiddleware } from './middlewares/authMiddleware.js';
 
 // Carrega as variáveis de ambiente do arquivo .env
 dotenv.config();
