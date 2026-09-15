@@ -52,7 +52,7 @@ Todas as rotas, exceto autenticação, exigem
 | GET | `/clientes/me` | Usuário autenticado |
 | PUT | `/clientes/me` | Usuário autenticado |
 | GET | `/clientes/:id` | ADM ou dono |
-| POST | `/clientes` | ADM |
+| POST | `/clientes` | ADM ou CLIENTE autenticado (cria o próprio perfil) |
 | PUT | `/clientes/:id` | ADM ou dono |
 | DELETE | `/clientes/:id` | ADM |
 | GET | `/animais` | Usuário autenticado; `?nome=Rex` é parcial |

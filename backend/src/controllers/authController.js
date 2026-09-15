@@ -3,6 +3,14 @@ import jwt from 'jsonwebtoken';
 import * as usuarioModel from '../models/usuarioModel.js';
 
 const publicUser = ({ id, email, perfil, data_criacao }) => ({ id, email, perfil, data_criacao });
+const createToken = (usuario) => {
+  if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET não configurado');
+  return jwt.sign(
+    { id: usuario.id, email: usuario.email, perfil: usuario.perfil },
+    process.env.JWT_SECRET,
+    { expiresIn: '8h' },
+  );
+};
 
 export const register = async (req, res) => {
   try {
@@ -15,7 +23,7 @@ export const register = async (req, res) => {
     }
     const senhaHash = await bcrypt.hash(senha, 10);
     const usuario = await usuarioModel.create(email.trim().toLowerCase(), senhaHash);
-    return res.status(201).json({ usuario: publicUser(usuario) });
+    return res.status(201).json({ token: createToken(usuario), usuario: publicUser(usuario) });
   } catch (error) {
     console.error('Erro ao registrar usuário:', error);
     if (error.code === '23505') return res.status(409).json({ mensagem: 'Email já cadastrado' });
@@ -31,13 +39,7 @@ export const login = async (req, res) => {
     if (!usuario || !(await bcrypt.compare(senha, usuario.senha_hash))) {
       return res.status(401).json({ mensagem: 'Email ou senha inválidos' });
     }
-    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET não configurado');
-    const token = jwt.sign(
-      { id: usuario.id, email: usuario.email, perfil: usuario.perfil },
-      process.env.JWT_SECRET,
-      { expiresIn: '8h' },
-    );
-    return res.status(200).json({ token, usuario: publicUser(usuario) });
+    return res.status(200).json({ token: createToken(usuario), usuario: publicUser(usuario) });
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     return res.status(500).json({ mensagem: 'Erro interno do servidor' });
