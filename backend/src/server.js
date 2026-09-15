@@ -23,7 +23,6 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/clientes', clienteRoutes);
 app.use('/animais', animalRoutes);
-app.use('/produtos', authMiddleware, produtoRoutes);
 
 app.get('/status', (req, res) => {
   const url = `http://localhost:${PORT}`;
