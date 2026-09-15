@@ -1,27 +1,64 @@
-import pool from './database/connection.js';
-import { getConfig } from './config.js';
-import { createApp } from './app.js';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
+import clienteRoutes from './routes/clienteRoutes.js';
+import animalRoutes from './routes/animalRoutes.js';
+import produtoRoutes from './routes/produtoRoutes.js';
+import { initializeDatabase } from './config/database.js';
+import { authMiddleware } from './middlewares/authMiddleware.js';
 
-try {
-  const config = getConfig();
-  await pool.query('SELECT 1 FROM usuarios LIMIT 1');
-  const server = createApp({ db: pool, config }).listen(config.port, () => {
-    console.log(`Indigenus API: http://localhost:${config.port}/api`);
+// Carrega as variáveis de ambiente do arquivo .env
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+let bancoStatus = 'desconectado';
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Registro das rotas principais
+app.use('/auth', authRoutes);
+app.use('/clientes', clienteRoutes);
+app.use('/animais', animalRoutes);
+app.use('/produtos', authMiddleware, produtoRoutes);
+
+app.get('/status', (req, res) => {
+  const url = `http://localhost:${PORT}`;
+
+  res.json({
+    status: bancoStatus === 'conectado' ? 'online' : 'degradado',
+    banco: bancoStatus,
+    porta: PORT,
+    url,
   });
-  server.on('error', async error => {
-    console.error('Não foi possível iniciar o servidor:', error.code);
-    await pool.end();
-    process.exitCode = 1;
+});
+
+app.use((req, res) => res.status(404).json({ mensagem: 'Rota não encontrada' }));
+
+// Inicialização do banco antes do servidor HTTP
+initializeDatabase()
+  .then(() => {
+    bancoStatus = 'conectado';
+
+    app.listen(PORT, () => {
+      console.log('API iniciada com sucesso.');
+      console.log(`Banco: conectado (${process.env.DB_NAME || 'não informado'})`);
+      console.log(`Porta: ${PORT}`);
+      console.log(`URL: http://localhost:${PORT}`);
+      console.log(`Status: http://localhost:${PORT}/status`);
+    });
+  })
+  .catch((error) => {
+    console.error('Erro ao inicializar o banco de dados:', error);
+    console.log(`API iniciada sem conexão com o banco.`);
+    console.log(`Porta: ${PORT}`);
+    console.log(`URL: http://localhost:${PORT}`);
+    console.log(`Status: http://localhost:${PORT}/status`);
+
+    app.listen(PORT, () => {
+      console.log('Acesse /status para verificar o estado atual da API e do banco.');
+    });
   });
-  const shutdown = () => {
-    const timeout = setTimeout(() => process.exit(1), 10000);
-    timeout.unref();
-    server.close(async () => { await pool.end(); clearTimeout(timeout); });
-  };
-  process.once('SIGINT', shutdown);
-  process.once('SIGTERM', shutdown);
-} catch (error) {
-  console.error('Falha na inicialização. Confira backend/.env, PostgreSQL e npm run db:migrate.', error.code || error.message);
-  await pool.end();
-  process.exitCode = 1;
-}
