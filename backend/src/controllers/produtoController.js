@@ -1,4 +1,4 @@
-import pool from '../database/connection.js';
+import pool from '../config/database.js';
 
 const idFrom = (value) => /^\d+$/.test(value) ? Number(value) : null;
 const validate = ({ nome, categoria, quantidade, preco }) =>
