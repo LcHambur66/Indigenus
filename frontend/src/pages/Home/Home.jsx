@@ -21,6 +21,8 @@ function Home() {
         <img src="teste.webp" className="h-[550px] w-[350px] rounded-4xl"  alt=""/>
       </div>
     </>
+
   );
+}
 
 export default Home;

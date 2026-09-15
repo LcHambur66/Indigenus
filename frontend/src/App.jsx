@@ -6,8 +6,6 @@ import DashboardAdm from "./pages/Dashboard_Adm/Dashoboard_adm";
 import DashboardCliente from "./pages/Dashboard_Cliente_animais/Dashboard_Cliente_animais";
 import ListagemAnimaisAdm from "./pages/Listagem_Animais_Adm/Listagem_Animais_Adm";
 import ListagemClientesAdm from "./pages/Listagem_Clientes_Adm/Listagem_Cliente_Adm";
-import CadastroAnimal from "./pages/cadastro_animal/Cadastro_animal"
-import Contato from "./pages/Contato/Contato"
 
 function RotaProtegida({ children, perfil }) {
   const token = localStorage.getItem("token");
@@ -66,10 +64,6 @@ function App() {
           }
         />
       </Routes>
-
-    <Home/>
-    <CadastroAnimal/>
-    <Contato/>
     </>
   )
 }
