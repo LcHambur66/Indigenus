@@ -1,0 +1,86 @@
+@baseUrl = http://localhost:3000
+@token = substitua-pelo-token-retornado-no-login
+@categoriaId = 1
+@produtoId = 1
+
+### Saúde
+GET {{baseUrl}}/api/health
+
+### Cadastro de usuário comum
+POST {{baseUrl}}/api/auth/cadastro
+Content-Type: application/json
+
+{"nome":"Maria Silva","email":"maria@example.com","senha":"UmaSenhaForte123!"}
+
+### Login (use o administrador criado pelo script para testar escritas)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{"email":"admin@example.com","senha":"a-senha-que-voce-configurou"}
+
+### Perfil
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### Editar perfil
+PUT {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Administrador Atualizado","email":"admin@example.com"}
+
+### Criar categoria — copie o ID retornado para categoriaId
+POST {{baseUrl}}/api/categorias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Ração","descricao":"Alimentos para pets"}
+
+### Listar categorias
+GET {{baseUrl}}/api/categorias
+Authorization: Bearer {{token}}
+
+### Consultar categoria
+GET {{baseUrl}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+
+### Atualizar categoria
+PUT {{baseUrl}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Alimentos","descricao":"Alimentos para animais"}
+
+### Criar produto — copie o ID retornado para produtoId
+POST {{baseUrl}}/api/produtos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Ração Premium","categoria_id":{{categoriaId}},"quantidade":20,"preco":89.90,"descricao":"Pacote de 3 kg","imagem":"/imagens/racao-cao.jpg"}
+
+### Listar produtos
+GET {{baseUrl}}/api/produtos
+Authorization: Bearer {{token}}
+
+### Consultar produto
+GET {{baseUrl}}/api/produtos/{{produtoId}}
+Authorization: Bearer {{token}}
+
+### Atualizar produto
+PUT {{baseUrl}}/api/produtos/{{produtoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Ração Premium Atualizada","categoria_id":{{categoriaId}},"quantidade":15,"preco":95.90}
+
+### Excluir produto
+DELETE {{baseUrl}}/api/produtos/{{produtoId}}
+Authorization: Bearer {{token}}
+
+### Excluir categoria (após excluir seus produtos)
+DELETE {{baseUrl}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+
+### Logout (o token fica inválido)
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{token}}
