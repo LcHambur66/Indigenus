@@ -1,16 +1,12 @@
 {
-  "name": "backend-controle-estoque",
+  "name": "backend-petshop",
   "version": "1.0.0",
-  "description": "API REST para Controle de Estoque com Node.js, Express e PostgreSQL",
+  "description": "API REST de PetShop com Node.js, Express e PostgreSQL",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "node --test",
-    "db:migrate": "node scripts/migrate.js",
-    "admin:create": "node scripts/create-admin.js",
-    "users:create": "node scripts/create-users.js"
+    "dev": "nodemon src/server.js"
   },
   "keywords": [
     "nodejs",
@@ -19,23 +15,17 @@
     "api",
     "crud"
   ],
-  "engines": { "node": ">=22" },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-rate-limit": "^8.7.0",
-    "helmet": "^8.3.0",
-    "jsonwebtoken": "^9.0.3",
     "pg": "^8.12.0",
-    "zod": "^4.6.5"
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8",
-    "nodemon": "^3.1.4",
-    "supertest": "^7.2.2"
+    "nodemon": "^3.1.4"
   }
 }
