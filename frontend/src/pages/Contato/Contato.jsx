@@ -21,15 +21,15 @@ export default function Contato() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex flex-col">
-
       <div className="flex-1 flex items-center justify-center p-3 sm:p-4 md:p-6">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-4xl flex flex-col md:flex-row">
-          
           <div className="bg-teal-400 text-white p-6 sm:p-8 md:w-2/5 flex flex-col justify-center order-2 md:order-1">
             <span className="bg-white/20 text-xs font-medium px-3 py-1 rounded-full w-fit mb-4 sm:mb-6">
               CONTATO
             </span>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Fale conosco</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+              Fale conosco
+            </h1>
             <p className="text-sm sm:text-base opacity-90 mb-4">
               Estamos aqui para ajudar você e seu companheiro.
             </p>
@@ -52,14 +52,18 @@ export default function Contato() {
           </div>
 
           <div className="p-5 sm:p-6 md:p-8 md:w-3/5">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Envie uma mensagem</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">
+              Envie uma mensagem
+            </h2>
             <p className="text-sm text-gray-500 mb-5 sm:mb-6">
               Preencha o formulário abaixo e entraremos em contato.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome
+                </label>
                 <input
                   type="text"
                   name="nome"
@@ -72,7 +76,9 @@ export default function Contato() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -83,7 +89,9 @@ export default function Contato() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Telefone
+                  </label>
                   <input
                     type="tel"
                     name="telefone"
@@ -95,7 +103,9 @@ export default function Contato() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Assunto</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Assunto
+                </label>
                 <input
                   type="text"
                   name="assunto"
@@ -107,7 +117,9 @@ export default function Contato() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mensagem</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mensagem
+                </label>
                 <textarea
                   name="mensagem"
                   value={form.mensagem}
