@@ -68,8 +68,6 @@ function App() {
       </Routes>
 
     <Home/>
-    <CadastroAnimal/>
-    <Contato/>
     </>
   )
 }

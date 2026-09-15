@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 export default function AtualizarAnimal() {
-  const { id } = useParams(); // /animais/:id/editar
+  const { id } = useParams();
 
   const [form, setForm] = useState({
     nome: "",
@@ -14,10 +14,7 @@ export default function AtualizarAnimal() {
     foto: null,
   });
 
-  // Simula carregar os dados do animal
   useEffect(() => {
-    // Aqui você faria: api.get(`/animais/${id}`)
-    // Por enquanto deixo vazio para você preencher com a API
   }, [id]);
 
   const handleChange = (e) => {
@@ -31,7 +28,6 @@ export default function AtualizarAnimal() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Atualizando animal:", id, form);
-    // api.put(`/animais/${id}`, form)
   };
 
   return (
@@ -50,8 +46,6 @@ export default function AtualizarAnimal() {
             Altere as informações necessárias e salve as mudanças.
           </p>
         </div>
-
-        {/* Lado direito - Formulário */}
         <div className="p-5 sm:p-6 md:p-8 md:w-3/5 order-1 md:order-2">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Formulário</h2>
           <p className="text-sm text-gray-500 mb-5 sm:mb-6">Atualize os dados do seu animal.</p>
