@@ -48,8 +48,11 @@ export const meuPerfil = async (req, res) => {
 export const criar = async (req, res) => {
   try {
     if (!validate(req.body)) return res.status(400).json({ mensagem: 'Nome, telefone, CPF e email válido são obrigatórios' });
-    const usuarioId = req.body.usuario_id;
+    const usuarioId = req.user.perfil === 'ADM' ? req.body.usuario_id : req.user.id;
     if (!Number.isInteger(usuarioId)) return res.status(400).json({ mensagem: 'usuario_id é obrigatório e deve ser numérico' });
+    if (req.user.perfil !== 'ADM' && await clienteModel.findByUserId(req.user.id)) {
+      return res.status(409).json({ mensagem: 'Este usuário já possui um cliente cadastrado' });
+    }
     const cliente = await clienteModel.create({ ...req.body, usuarioId });
     return res.status(201).json(cliente);
   } catch (error) {
