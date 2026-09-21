@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../services/api";
 
 function Cadastro() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ function Cadastro() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/auth/register", {
+            const response = await apiFetch("/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,7 +40,7 @@ function Cadastro() {
                 );
             }
 
-            const clienteResponse = await fetch("http://localhost:3000/clientes", {
+            const clienteResponse = await apiFetch("/clientes", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

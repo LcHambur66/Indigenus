@@ -1,20 +1,34 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../../services/api";
 
 export default function AtualizarAnimal() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     nome: "",
     especie: "",
     raca: "",
+    idade: "",
     sexo: "",
-    dataNascimento: "",
-    informacoes: "",
+    data_nascimento: "",
+    detalhes: "",
+    cliente_id: "",
     foto: null,
   });
 
+  const [erro, setErro] = useState("");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
+    apiFetch(`/animais/${id}`)
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.mensagem || "Não foi possível carregar o animal.");
+        setForm({ ...data, data_nascimento: data.data_nascimento?.slice(0, 10) || "", foto: null });
+      })
+      .catch((error) => setErro(error.message));
   }, [id]);
 
   const handleChange = (e) => {
@@ -25,9 +39,32 @@ export default function AtualizarAnimal() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Atualizando animal:", id, form);
+    setErro("");
+    setLoading(true);
+    try {
+      const response = await apiFetch(`/animais/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          nome: form.nome,
+          especie: form.especie,
+          raca: form.raca || null,
+          idade: Number(form.idade),
+          sexo: form.sexo || null,
+          data_nascimento: form.data_nascimento || null,
+          detalhes: form.detalhes || null,
+          cliente_id: Number(form.cliente_id),
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.mensagem || "Não foi possível atualizar o animal.");
+      navigate(`/animais/${id}`);
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,6 +122,10 @@ export default function AtualizarAnimal() {
                   className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Idade</label>
+                <input type="number" name="idade" min="0" value={form.idade} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -110,8 +151,8 @@ export default function AtualizarAnimal() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Data de nascimento</label>
                 <input
                   type="date"
-                  name="dataNascimento"
-                  value={form.dataNascimento}
+                  name="data_nascimento"
+                  value={form.data_nascimento}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -136,16 +177,24 @@ export default function AtualizarAnimal() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Informações adicionais</label>
               <input
                 type="text"
-                name="informacoes"
-                value={form.informacoes}
+                name="detalhes"
+                value={form.detalhes}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">ID do cliente</label>
+              <input type="number" name="cliente_id" min="1" value={form.cliente_id} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            {erro && <p className="text-sm text-red-600">{erro}</p>}
+
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="button"
+                onClick={() => navigate(-1)}
                 className="w-full sm:flex-1 border border-gray-300 text-gray-700 font-medium py-2.5 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base"
               >
                 Cancelar
@@ -154,7 +203,7 @@ export default function AtualizarAnimal() {
                 type="submit"
                 className="w-full sm:flex-1 bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base"
               >
-                Salvar alterações
+                {loading ? "Salvando..." : "Salvar alterações"}
               </button>
             </div>
           </form>
