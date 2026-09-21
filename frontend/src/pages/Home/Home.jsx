@@ -18,9 +18,14 @@ function Home() {
             rotina e tenha tudo o que precisa na palma da mão.
           </p>
         </div>
-        <img src="teste.webp" className="h-[550px] w-[350px] rounded-4xl"  alt=""/>
+        <img
+          src="teste.webp"
+          className="h-[550px] w-[350px] rounded-4xl"
+          alt=""
+        />
       </div>
     </>
   );
+}
 
 export default Home;
