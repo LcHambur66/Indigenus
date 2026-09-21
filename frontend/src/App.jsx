@@ -64,6 +64,8 @@ function App() {
           }
         />
       </Routes>
+
+    <Home/>
     </>
   )
 }
