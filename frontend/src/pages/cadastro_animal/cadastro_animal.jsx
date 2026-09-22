@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { apiFetch } from "../../services/api";
 
 export default function CadastroAnimal() {
   const [form, setForm] = useState({
     nome: "",
-    especime: "",
+    especie: "",
     raca: "",
+    idade: "",
     sexo: "",
-    dataNascimento: "",
-    informacoes: "",
+    data_nascimento: "",
+    detalhes: "",
+    cliente_id: "",
     foto: null,
   });
 
   const [fotoPreview, setFotoPreview] = useState(null);
+  const [erro, setErro] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const carregarCliente = async () => {
+      const response = await apiFetch("/clientes/me");
+      if (response.ok) {
+        const cliente = await response.json();
+        setForm((prev) => ({ ...prev, cliente_id: String(cliente.id) }));
+      }
+    };
+
+    carregarCliente().catch(() => undefined);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -32,47 +49,49 @@ export default function CadastroAnimal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErro("");
+    setLoading(true);
 
-    const formData = new FormData();
-    formData.append("nome", form.nome);
-    formData.append("especime", form.especime);
-    formData.append("raca", form.raca);
-    formData.append("sexo", form.sexo);
-    formData.append("dataNascimento", form.dataNascimento);
-    formData.append("informacoes", form.informacoes);
-    
-    if (form.foto) {
-      formData.append("foto", form.foto);
-    }
+    const payload = {
+      nome: form.nome,
+      especie: form.especie,
+      raca: form.raca || null,
+      idade: Number(form.idade),
+      sexo: form.sexo || null,
+      data_nascimento: form.data_nascimento || null,
+      detalhes: form.detalhes || null,
+      cliente_id: Number(form.cliente_id),
+    };
 
     try {
-      const response = await fetch("http://localhost:3000/animais", {
+      const response = await apiFetch("/animais", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(payload),
       });
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("Erro ao salvar o animal");
+        throw new Error(data.mensagem || "Erro ao salvar o animal");
       }
 
-      const dadosSalvos = await response.json();
-      console.log("Animal cadastrado com sucesso:", dadosSalvos);
       alert("Animal cadastrado com sucesso!");
 
       setForm({
         nome: "",
-        especime: "",
+        especie: "",
         raca: "",
+        idade: "",
         sexo: "",
-        dataNascimento: "",
-        informacoes: "",
+        data_nascimento: "",
+        detalhes: "",
+        cliente_id: form.cliente_id,
         foto: null,
       });
       setFotoPreview(null);
-
     } catch (error) {
-      console.error("Erro na requisição:", error);
-      alert("Houve um erro ao tentar salvar o animal.");
+      setErro(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,8 +136,8 @@ export default function CadastroAnimal() {
                 </label>
                 <input
                   type="text"
-                  name="especime"
-                  value={form.especime}
+                  name="especie"
+                  value={form.especie}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -135,6 +154,37 @@ export default function CadastroAnimal() {
                   value={form.raca}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Idade
+                </label>
+                <input
+                  type="number"
+                  name="idade"
+                  min="0"
+                  value={form.idade}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  ID do cliente
+                </label>
+                <input
+                  type="number"
+                  name="cliente_id"
+                  min="1"
+                  value={form.cliente_id}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
             </div>
@@ -171,8 +221,8 @@ export default function CadastroAnimal() {
                 </label>
                 <input
                   type="date"
-                  name="dataNascimento"
-                  value={form.dataNascimento}
+                  name="data_nascimento"
+                  value={form.data_nascimento}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -207,18 +257,20 @@ export default function CadastroAnimal() {
               </label>
               <input
                 type="text"
-                name="informacoes"
-                value={form.informacoes}
+                name="detalhes"
+                value={form.detalhes}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
+            {erro && <p className="text-sm text-red-600">{erro}</p>}
+
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => {
-                  setForm({ nome: "", especime: "", raca: "", sexo: "", dataNascimento: "", informacoes: "", foto: null });
+                  setForm({ nome: "", especie: "", raca: "", idade: "", sexo: "", data_nascimento: "", detalhes: "", cliente_id: form.cliente_id, foto: null });
                   setFotoPreview(null);
                 }}
                 className="flex-1 border border-gray-300 text-gray-700 font-medium py-2.5 rounded-lg hover:bg-gray-50 transition"
@@ -229,7 +281,7 @@ export default function CadastroAnimal() {
                 type="submit"
                 className="flex-1 bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition"
               >
-                Salvar cadastro
+                {loading ? "Salvando..." : "Salvar cadastro"}
               </button>
             </div>
           </form>

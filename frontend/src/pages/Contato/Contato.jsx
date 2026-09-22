@@ -8,15 +8,17 @@ export default function Contato() {
     assunto: "",
     mensagem: "",
   });
+  const [enviado, setEnviado] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setEnviado(false);
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Mensagem enviada:", form);
+    setEnviado(true);
   };
 
   return (
@@ -133,6 +135,7 @@ export default function Contato() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="button"
+                  onClick={() => setForm({ nome: "", email: "", telefone: "", assunto: "", mensagem: "" })}
                   className="w-full sm:flex-1 border border-gray-300 text-gray-700 font-medium py-2.5 rounded-lg hover:bg-gray-50 transition text-sm sm:text-base"
                 >
                   Cancelar
@@ -144,6 +147,7 @@ export default function Contato() {
                   Enviar mensagem
                 </button>
               </div>
+              {enviado && <p className="text-center text-sm text-green-600">Mensagem registrada. Entraremos em contato em breve.</p>}
             </form>
           </div>
         </div>

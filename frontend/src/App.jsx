@@ -6,8 +6,11 @@ import DashboardAdm from "./pages/Dashboard_Adm/Dashoboard_adm";
 import DashboardCliente from "./pages/Dashboard_Cliente_animais/Dashboard_Cliente_animais";
 import ListagemAnimaisAdm from "./pages/Listagem_Animais_Adm/Listagem_Animais_Adm";
 import ListagemClientesAdm from "./pages/Listagem_Clientes_Adm/Listagem_Cliente_Adm";
-import CadastroAnimal from "./pages/cadastro_animal/Cadastro_animal"
-import Contato from "./pages/Contato/Contato"
+import CadastroAnimal from "./pages/cadastro_animal/cadastro_animal";
+import AtualizarAnimal from "./pages/Atualizar_cadastro/Atualizar_cadastro";
+import AnimalDetalhes from "./pages/Detalhes/Detalhes";
+import Contato from "./pages/Contato/Contato";
+import ModulePage from "./pages/ModulePage/ModulePage";
 
 function RotaProtegida({ children, perfil }) {
   const token = localStorage.getItem("token");
@@ -33,6 +36,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/cadastro" element={<Register />} />
+        <Route path="/contato" element={<Contato />} />
+        <Route path="/servicos" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
+        <Route path="/agendamentos" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
+        <Route path="/atendimentos" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
+        <Route path="/financeiro" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
+        <Route path="/usuarios" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
+        <Route path="/permissoes" element={<RotaProtegida perfil="ADM"><ModulePage /></RotaProtegida>} />
         <Route
           path="/dashboard/adm"
           element={
@@ -65,9 +76,32 @@ function App() {
             </RotaProtegida>
           }
         />
+        <Route
+          path="/animais/cadastro"
+          element={
+            <RotaProtegida>
+              <CadastroAnimal />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/animais/:id"
+          element={
+            <RotaProtegida>
+              <AnimalDetalhes />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/animais/:id/editar"
+          element={
+            <RotaProtegida>
+              <AtualizarAnimal />
+            </RotaProtegida>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
-    <Home/>
     </>
   )
 }
